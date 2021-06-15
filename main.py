@@ -3,7 +3,8 @@ import json
 from datetime import datetime, time, date, timedelta
 
 client = discord.Client()
-discord_token = ''
+with open('config.json', 'r') as token:
+    discord_token = json.load(token)['token']
 first = time(16, 0, 0)
 second = time(16, 50, 0)
 third = time(17, 40, 0)
@@ -13,6 +14,7 @@ fifth = time(19, 45, 0)
 end = time(20, 35, 0)
 hours = [first, second, third, forth, fifth]
 days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabado']
+roleId = {'3c2': '853795487513706537', '3a2': '853795394676850728'}
 
 
 def ExceptionHandling(message, data):
@@ -28,12 +30,13 @@ def ExceptionHandling(message, data):
     return
 
 
-def CreateEmbed(data, x):
+def CreateEmbed(data, x, command):
     strings = []
     for key, value in data[str(x)].items():
         strings.append(f'{key}° Horário: {value["subject"]} | {value["time"][0]} - {value["time"][1]}')
     return discord.Embed(title=days[int(x)],
-                         description=f'{strings[0]}\n '
+                         description=f'@{command.upper()}\n '
+                                     f'{strings[0]}\n '
                                      f'{strings[1]}\n '
                                      f'{strings[2]}\n '
                                      f'{strings[3]}\n '
@@ -50,7 +53,6 @@ def GetActualTime():
     timeNow = datetime.utcnow().time()
     # timeNow = time(20, 0, 0)
     weekday = str(datetime.utcnow().weekday() + 1)
-    print(weekday)
     if first < timeNow < second:
         hour = '1'
     elif second < timeNow < third:
@@ -89,7 +91,7 @@ async def on_message(message):
         command = message.content.split()[1]
         dataFiltred = data[command]
         for x in range(1, 6):
-            embedVar = CreateEmbed(dataFiltred, x)
+            embedVar = CreateEmbed(dataFiltred, x, command)
             await message.channel.send(embed=embedVar)
 
     if message.content.startswith('!hoje'):
@@ -102,7 +104,7 @@ async def on_message(message):
         dataFiltred = data[command]
         timeData = GetActualTime()
         weekDay = timeData[0]
-        embedVar = CreateEmbed(dataFiltred, weekDay)
+        embedVar = CreateEmbed(dataFiltred, weekDay, command)
         await message.channel.send(embed=embedVar)
 
     if message.content.startswith('!agora'):
@@ -124,12 +126,13 @@ async def on_message(message):
         subject = data[command][weekDay][hour]['subject']
         startEnd = data[command][weekDay][hour]['time']
         dia = date(1, 1, 1)
-        timeEnd = datetime.combine(dia, datetime.strptime(startEnd[1], '%H:%M').time())
+        timeEnd = datetime.combine(dia, hours[int(hour) - 1])
         timeNow = datetime.combine(dia, datetime.utcnow().time())
-        timeLeft = round(timedelta.total_seconds(timeEnd - timeNow) / 60)
+        timeLeft = round(timedelta.total_seconds(timeNow - timeEnd) / 60, 1)
         embedVar = discord.Embed(title=f'Ta tendo aula de {subject} agora, corre lá!',
                                  description=f'Começou {startEnd[0]} e vai terminar {startEnd[1]}\n '
-                                             f'falta {timeLeft} minutos para acabar!',
+                                             f'falta {timeLeft} minutos para acabar!\n'
+                                             f'<@&{roleId[command]}>',
                                  color=0xfc03f0)
         await message.channel.send(embed=embedVar)
 
