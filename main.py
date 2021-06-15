@@ -3,7 +3,7 @@ import json
 from datetime import datetime, time
 
 client = discord.Client()
-discord_token = 'ODU0MTMyMzYyOTMzODI5NjQy.YMfewA.-GcI5Fv486VjpTFg-woF65YUphI'
+discord_token = ''
 first = time(16, 0, 0)
 second = time(16, 50, 0)
 third = time(17, 40, 0)
