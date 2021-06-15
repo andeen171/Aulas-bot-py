@@ -15,6 +15,32 @@ hours = [first, second, third, forth, fifth]
 days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabado']
 
 
+def ExceptionHandling(message, data):
+    if len(message.content.split()) < 2:
+        return 'Faltou informar o código da turma!'
+    command = message.content.split()[1]
+    try:
+        dataFiltred = data[command]
+    except KeyError:
+        return 'Codigo de turma inválido'
+    if dataFiltred == "free":
+        return "Nenhuma aula hoje"
+    return
+
+
+def CreateEmbed(data, x):
+    strings = []
+    for key, value in data[str(x)].items():
+        strings.append(f'{key}° Horário: {value["subject"]} | {value["time"][0]} - {value["time"][1]}')
+    return discord.Embed(title=days[int(x)],
+                         description=f'{strings[0]}\n '
+                                     f'{strings[1]}\n '
+                                     f'{strings[2]}\n '
+                                     f'{strings[3]}\n '
+                                     f'{strings[4]}\n ',
+                         color=0xfc03f0)
+
+
 def GetRawFile():
     with open('data.json', 'r') as jason:
         return json.load(jason)
@@ -23,7 +49,7 @@ def GetRawFile():
 def GetActualTime():
     timeNow = datetime.utcnow().time()
     # timeNow = time(20, 0, 0)
-    weekday = str(datetime.utcnow().weekday())
+    weekday = str(datetime.utcnow().weekday() + 1)
     print(weekday)
     if first < timeNow < second:
         hour = '1'
@@ -54,42 +80,37 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('!hoje'):
-        if len(message.content.split()) < 2:
-            await message.channel.send('Faltou informar o código da turma!')
+    if message.content.startswith('!horario'):
+        data = GetRawFile()
+        exception = ExceptionHandling(message, data)
+        if exception:
+            await message.channel.send(exception)
             return
         command = message.content.split()[1]
+        dataFiltred = data[command]
+        for x in range(1, 6):
+            embedVar = CreateEmbed(dataFiltred, x)
+            await message.channel.send(embed=embedVar)
+
+    if message.content.startswith('!hoje'):
         data = GetRawFile()
+        exception = ExceptionHandling(message, data)
+        if exception:
+            await message.channel.send(exception)
+            return
+        command = message.content.split()[1]
+        dataFiltred = data[command]
         timeData = GetActualTime()
         weekDay = timeData[0]
-        try:
-            dataFiltred = data[command][weekDay]
-        except KeyError:
-            await message.channel.send('Codigo de turma inválido')
-            return
-        if dataFiltred == "free":
-            embedVar = discord.Embed(title=days[int(weekDay)],
-                                     description="Hoje ce ta atoa",
-                                     color=0xfc03f0)
-            await message.channel.send(embed=embedVar)
-            return
-        strings = []
-        for key, value in dataFiltred.items():
-            strings.append(f'{key}° Horário: {value["subject"]} | {value["time"][0]} - {value["time"][1]}')
-        embedVar = discord.Embed(title=days[int(weekDay)],
-                                 description=f'{strings[0]}\n '
-                                             f'{strings[1]}\n '
-                                             f'{strings[2]}\n '
-                                             f'{strings[3]}\n '
-                                             f'{strings[4]}\n ',
-                                 color=0xfc03f0)
+        embedVar = CreateEmbed(dataFiltred, weekDay)
         await message.channel.send(embed=embedVar)
 
     if message.content.startswith('!agora'):
-        if len(message.content.split()) < 2:
-            await message.channel.send('Faltou informar o código da turma!')
-            return
         data = GetRawFile()
+        exception = ExceptionHandling(message, data)
+        if exception:
+            await message.channel.send(exception)
+            return
         command = message.content.split()[1]
         timeData = GetActualTime()
         weekDay = timeData[0]
@@ -100,12 +121,8 @@ async def on_message(message):
         if hour == 'interval':
             await message.channel.send('Ta no intervalo!')
             return
-        try:
-            subject = data[command][weekDay][hour]['subject']
-            startEnd = data[command][weekDay][hour]['time']
-        except KeyError:
-            await message.channel.send('Codigo de turma inválido')
-            return
+        subject = data[command][weekDay][hour]['subject']
+        startEnd = data[command][weekDay][hour]['time']
         dia = date(1, 1, 1)
         timeEnd = datetime.combine(dia, datetime.strptime(startEnd[1], '%H:%M').time())
         timeNow = datetime.combine(dia, datetime.utcnow().time())
@@ -121,7 +138,13 @@ async def on_message(message):
                                  description="Lista de todos os comandos do BOT e como utilizá-los",
                                  color=0xfc03f0)
         embedVar.add_field(name="!agora",
-                           value="Te informa a aula que ta rolando agora pra turma que você pedir\n Ex: !agora 3c2",
+                           value="Te informa a aula que ta rolando agora pra turma que pedir\n Ex: !agora 3c2",
+                           inline=False)
+        embedVar.add_field(name="!hoje",
+                           value="Te informa o horario de hoje para a turma que pedir\n Ex: !hoje 3c2",
+                           inline=False)
+        embedVar.add_field(name="!horario",
+                           value="Te informa o horario completo para a turma que pedir\n Ex: !horario 3c2",
                            inline=False)
         await message.channel.send(embed=embedVar)
 
