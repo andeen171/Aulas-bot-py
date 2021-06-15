@@ -1,5 +1,6 @@
 {
    "3c2":{
+      "0": "free",
       "1":{
          "1":{
             "time":[
@@ -43,72 +44,72 @@
                "13:00",
                "13:50"
             ],
-            "subject":"TPA"
+            "subject":"PORT"
          },
          "2":{
             "time":[
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject":"BD2"
          },
          "3":{
             "time":[
                "14:40",
                "15:30"
             ],
-            "subject":"FIS"
+            "subject":"PORT"
          },
          "4":{
             "time":[
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject":"POO"
          },
          "5":{
             "time":[
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject":"POO"
          }
       },
       "3":{
          "1":{
-            "time":[
-               "13:00",
-               "13:50"
+             "time":[
+               "13:50",
+               "14:40"
             ],
-            "subject":"TPA"
+            "subject":"Livre"
          },
          "2":{
             "time":[
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject":"RAC"
          },
          "3":{
             "time":[
                "14:40",
                "15:30"
             ],
-            "subject":"FIS"
+            "subject":"RAC"
          },
          "4":{
             "time":[
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject":"RAC"
          },
          "5":{
             "time":[
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject":"RAC"
          }
       },
       "4":{
@@ -117,14 +118,14 @@
                "13:00",
                "13:50"
             ],
-            "subject":"TPA"
+            "subject":"BD2"
          },
          "2":{
             "time":[
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject":"MAT"
          },
          "3":{
             "time":[
@@ -138,14 +139,14 @@
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject":"POO"
          },
          "5":{
             "time":[
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject":"POO"
          }
       },
       "5":{
@@ -154,371 +155,226 @@
                "13:00",
                "13:50"
             ],
-            "subject":"TPA"
+            "subject":"MAT"
          },
          "2":{
             "time":[
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject":"ATUAL"
          },
          "3":{
             "time":[
                "14:40",
                "15:30"
             ],
-            "subject":"FIS"
+            "subject":"MAT"
          },
          "4":{
             "time":[
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject":"FIL/SOC"
          },
          "5":{
             "time":[
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject":"Atual"
          }
       },
-      "6":{
-         "1":{
-            "time":[
-               "13:00",
-               "13:50"
-            ],
-            "subject":"TPA"
-         },
-         "2":{
-            "time":[
-               "13:50",
-               "14:40"
-            ],
-            "subject":"TPA"
-         },
-         "3":{
-            "time":[
-               "14:40",
-               "15:30"
-            ],
-            "subject":"FIS"
-         },
-         "4":{
-            "time":[
-               "15:55",
-               "16:45"
-            ],
-            "subject":"GC"
-         },
-         "5":{
-            "time":[
-               "16:45",
-               "17:35"
-            ],
-            "subject":"GC"
-         }
-      },
-      "7":{
-         "1":{
-            "time":[
-               "13:00",
-               "13:50"
-            ],
-            "subject":"TPA"
-         },
-         "2":{
-            "time":[
-               "13:50",
-               "14:40"
-            ],
-            "subject":"TPA"
-         },
-         "3":{
-            "time":[
-               "14:40",
-               "15:30"
-            ],
-            "subject":"FIS"
-         },
-         "4":{
-            "time":[
-               "15:55",
-               "16:45"
-            ],
-            "subject":"GC"
-         },
-         "5":{
-            "time":[
-               "16:45",
-               "17:35"
-            ],
-            "subject":"GC"
-         }
-      }
+      "6": "free"
    },
-   "3a2":{
-      "1":{
-         "1":{
-            "time":[
+   "3a2": {
+      "0": "free",
+      "1": {
+         "1": {
+            "time": [
                "13:00",
                "13:50"
             ],
-            "subject":"TPA"
+            "subject": "TPA"
          },
-         "2":{
-            "time":[
+         "2": {
+            "time": [
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject": "TPA"
          },
-         "3":{
-            "time":[
+         "3": {
+            "time": [
                "14:40",
                "15:30"
             ],
-            "subject":"FIS"
+            "subject": "FIS"
          },
-         "4":{
-            "time":[
+         "4": {
+            "time": [
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject": "GC"
          },
-         "5":{
-            "time":[
+         "5": {
+            "time": [
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject": "GC"
          }
       },
-      "2":{
-         "1":{
-            "time":[
+      "2": {
+         "1": {
+            "time": [
                "13:00",
                "13:50"
             ],
-            "subject":"TPA"
+            "subject": "PORT"
          },
-         "2":{
-            "time":[
+         "2": {
+            "time": [
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject": "BD2"
          },
-         "3":{
-            "time":[
+         "3": {
+            "time": [
                "14:40",
                "15:30"
             ],
-            "subject":"FIS"
+            "subject": "PORT"
          },
-         "4":{
-            "time":[
+         "4": {
+            "time": [
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject": "POO"
          },
-         "5":{
-            "time":[
+         "5": {
+            "time": [
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject": "POO"
          }
       },
-      "3":{
+      "3": {
          "1":{
-            "time":[
-               "13:00",
-               "13:50"
-            ],
-            "subject":"TPA"
-         },
-         "2":{
-            "time":[
+             "time":[
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject":"Livre"
          },
-         "3":{
-            "time":[
+         "2": {
+            "time": [
+               "13:50",
+               "14:40"
+            ],
+            "subject": "RAC"
+         },
+         "3": {
+            "time": [
                "14:40",
                "15:30"
             ],
-            "subject":"FIS"
+            "subject": "RAC"
          },
-         "4":{
-            "time":[
+         "4": {
+            "time": [
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject": "RAC"
          },
-         "5":{
-            "time":[
+         "5": {
+            "time": [
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject": "RAC"
          }
       },
-      "4":{
-         "1":{
-            "time":[
+      "4": {
+         "1": {
+            "time": [
                "13:00",
                "13:50"
             ],
-            "subject":"TPA"
+            "subject": "BD2"
          },
-         "2":{
-            "time":[
+         "2": {
+            "time": [
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject": "MAT"
          },
-         "3":{
-            "time":[
+         "3": {
+            "time": [
                "14:40",
                "15:30"
             ],
-            "subject":"FIS"
+            "subject": "FIS"
          },
-         "4":{
-            "time":[
+         "4": {
+            "time": [
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject": "POO"
          },
-         "5":{
-            "time":[
+         "5": {
+            "time": [
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject": "POO"
          }
       },
-      "5":{
-         "1":{
-            "time":[
+      "5": {
+         "1": {
+            "time": [
                "13:00",
                "13:50"
             ],
-            "subject":"TPA"
+            "subject": "MAT"
          },
-         "2":{
-            "time":[
+         "2": {
+            "time": [
                "13:50",
                "14:40"
             ],
-            "subject":"TPA"
+            "subject": "ATUAL"
          },
-         "3":{
-            "time":[
+         "3": {
+            "time": [
                "14:40",
                "15:30"
             ],
-            "subject":"FIS"
+            "subject": "MAT"
          },
-         "4":{
-            "time":[
+         "4": {
+            "time": [
                "15:55",
                "16:45"
             ],
-            "subject":"GC"
+            "subject": "FIL/SOC"
          },
-         "5":{
-            "time":[
+         "5": {
+            "time": [
                "16:45",
                "17:35"
             ],
-            "subject":"GC"
+            "subject": "Atual"
          }
       },
-      "6":{
-         "1":{
-            "time":[
-               "13:00",
-               "13:50"
-            ],
-            "subject":"TPA"
-         },
-         "2":{
-            "time":[
-               "13:50",
-               "14:40"
-            ],
-            "subject":"TPA"
-         },
-         "3":{
-            "time":[
-               "14:40",
-               "15:30"
-            ],
-            "subject":"FIS"
-         },
-         "4":{
-            "time":[
-               "15:55",
-               "16:45"
-            ],
-            "subject":"GC"
-         },
-         "5":{
-            "time":[
-               "16:45",
-               "17:35"
-            ],
-            "subject":"GC"
-         }
-      },
-      "7":{
-         "1":{
-            "time":[
-               "13:00",
-               "13:50"
-            ],
-            "subject":"TPA"
-         },
-         "2":{
-            "time":[
-               "13:50",
-               "14:40"
-            ],
-            "subject":"TPA"
-         },
-         "3":{
-            "time":[
-               "14:40",
-               "15:30"
-            ],
-            "subject":"FIS"
-         },
-         "4":{
-            "time":[
-               "15:55",
-               "16:45"
-            ],
-            "subject":"GC"
-         },
-         "5":{
-            "time":[
-               "16:45",
-               "17:35"
-            ],
-            "subject":"GC"
-         }
-      }
+      "6": "free"
    }
 }
