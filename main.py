@@ -14,6 +14,7 @@ forth = time(0, 0, 0)
 fifth = time(0, 0, 0)
 end = time(0, 0, 0)
 hours = []
+now = time(0, 0, 0)
 days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabado']
 roleId = {'3c2': '853795487513706537', '3a2': '853795394676850728'}
 
@@ -25,8 +26,9 @@ def ConvertToUTC(hour):
 
 
 def CreateGlobals(data, command, weekDay):
-    global first, second, third, pause, forth, fifth, end, hours
+    global first, second, third, pause, forth, fifth, end, hours, now
     dataFiltered = data[command][weekDay]
+    now = ConvertToUTC(datetime.now()).time()
 
     temp = datetime.strptime(dataFiltered['1']['time'][0], '%H:%M')
     first = ConvertToUTC(temp).time()
@@ -74,7 +76,9 @@ def TimeUntil(hour, interval=False, free=False, weekDay=None):
             timeEnd = datetime.combine(date(1, 1, 2), first)
     else:
         timeEnd = datetime.combine(dia, hours[int(hour) - 1])
-    timeNow = datetime.combine(dia, datetime.utcnow().time())
+    timeNow = datetime.combine(dia, now)
+    if '-' in str(timeEnd - timeNow):
+        return round(timedelta.total_seconds(timeNow - timeEnd) / 60, 1)
     return round(timedelta.total_seconds(timeEnd - timeNow) / 60, 1)
 
 
@@ -110,19 +114,18 @@ def GetRawFile():
 
 
 def GetActualTime():
-    timeNow = datetime.utcnow().time()
     # timeNow = time(20, 0, 0)
-    if first < timeNow < second:
+    if first < now < second:
         hour = '1'
-    elif second < timeNow < third:
+    elif second < now < third:
         hour = '2'
-    elif third < timeNow < pause:
+    elif third < now < pause:
         hour = '3'
-    elif pause < timeNow < forth:
+    elif pause < now < forth:
         hour = 'interval'
-    elif forth < timeNow < fifth:
+    elif forth < now < fifth:
         hour = '4'
-    elif fifth < timeNow < end:
+    elif fifth < now < end:
         hour = '5'
     else:
         hour = 'free'
@@ -141,14 +144,14 @@ async def on_message(message):
     if message.author == client.user:
         return
     data = GetRawFile()
-    weekDay = str(datetime.utcnow().weekday() + 1)
+    weekDay = str(ConvertToUTC(datetime.now()).weekday() + 1)
 
     if message.content.startswith('!horario'):
         exception = ExceptionHandling(message, data)
         if exception:
             await message.channel.send(exception)
             return
-        command = message.content.split()[1]
+        command = message.content.split()[1].upper()
         CreateGlobals(data, command, weekDay)
         dataFiltred = data[command]
         for x in range(1, 6):
@@ -160,7 +163,7 @@ async def on_message(message):
         if exception:
             await message.channel.send(exception)
             return
-        command = message.content.split()[1]
+        command = message.content.split()[1].upper()
         CreateGlobals(data, command, weekDay)
         dataFiltred = data[command]
         embedVar = CreateEmbed(dataFiltred, weekDay)
@@ -171,7 +174,7 @@ async def on_message(message):
         if exception:
             await message.channel.send(exception)
             return
-        command = message.content.split()[1]
+        command = message.content.split()[1].upper()
         CreateGlobals(data, command, weekDay)
         hour = GetActualTime()
         if hour == 'free':
