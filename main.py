@@ -16,14 +16,13 @@ fifth = time(0, 0, 0)
 end = time(0, 0, 0)
 now = time(0, 0, 0)
 hours = {}
-timeZone = pytz.timezone('America/Sao_Paulo')
 days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabado']
 
 
 def set_globals(data, command, week_day):
-    global first, second, third, pause, forth, fifth, end, hours, now, timeZone
+    global first, second, third, pause, forth, fifth, end, hours, now
     data_filtered = data[command][week_day]
-    now = datetime.now(timeZone).time()
+    now = datetime.now(pytz.timezone('America/Sao_Paulo')).time()
     first = datetime.strptime(data_filtered['1']['time'][0], '%H:%M').time()
     second = datetime.strptime(data_filtered['1']['time'][1], '%H:%M').time()
     third = datetime.strptime(data_filtered['2']['time'][1], '%H:%M').time()
@@ -161,7 +160,7 @@ async def on_message(message):
     if message.author == client.user or '!' not in message.content:
         return
     data = raw_file()
-    week_day = str(datetime.now(timeZone).weekday() + 1)
+    week_day = str(datetime.now(pytz.timezone('America/Sao_Paulo')).weekday() + 1)
     exception = exception_handling(message, data)
     if exception:
         await message.channel.send(exception)
