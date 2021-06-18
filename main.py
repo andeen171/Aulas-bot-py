@@ -126,7 +126,7 @@ def class_now(week_day, data_filtred, role):
         else:
             time_left = str(time_left) + ' minutos'
         subject = next_subject(week_day, data_filtred)
-        return discord.Embed(title='Nenhuma aula hoje!',
+        return discord.Embed(title='Nenhuma aula no momento!',
                              description=f'Falta {time_left} para a aula de {subject}!\n'
                                          f'{mention}',
                              color=0xfc03f0)
