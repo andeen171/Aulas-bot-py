@@ -85,7 +85,7 @@ def create_embed(data, x):
                                      f'{strings[2]}\n '
                                      f'{strings[3]}\n '
                                      f'{strings[4]}\n ',
-                         color=0xfc03f0)
+                         color=0xffd343)
 
 
 def raw_file():
@@ -129,7 +129,7 @@ def class_now(week_day, data_filtred, role):
         return discord.Embed(title='Nenhuma aula no momento!',
                              description=f'Falta {time_left} para a aula de {subject}!\n'
                                          f'{mention}',
-                             color=0xfc03f0)
+                             color=0xffd343)
 
     if hour == 'interval':
         time_left = time_until(hour, interval=True)
@@ -137,7 +137,7 @@ def class_now(week_day, data_filtred, role):
         return discord.Embed(title='Ta no intervalo',
                              description=f'Falta {time_left} minutos para a aula de {subject}!\n'
                                          f'{mention}',
-                             color=0xfc03f0)
+                             color=0xffd343)
 
     subject = data_filtred[week_day][hour]['subject']
     start_end = data_filtred[week_day][hour]['time']
@@ -146,7 +146,7 @@ def class_now(week_day, data_filtred, role):
                          description=f'Começou {start_end[0]} e vai terminar {start_end[1]}\n '
                                      f'falta {time_left} minutos para acabar!\n'
                                      f'{mention}',
-                         color=0xfc03f0)
+                         color=0xffd343)
 
 
 @client.event
@@ -187,15 +187,21 @@ async def on_message(message):
     if message.content.startswith('!help'):
         embed_var = discord.Embed(title="Class Assistant.py Bot",
                                   description="Lista de todos os comandos do BOT e como utilizá-los",
-                                  color=0xfc03f0)
+                                  color=0xffd343)
         embed_var.add_field(name="!agora",
-                            value="Te informa a aula que ta rolando agora pra turma que pedir\n Ex: !agora 3c2",
+                            value="Te informa a aula que ta rolando agora pra turma que pedir\n"
+                                  "Ex: !agora 3c2\n"
+                                  "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
                             inline=False)
         embed_var.add_field(name="!hoje",
-                            value="Te informa o horario de hoje para a turma que pedir\n Ex: !hoje 3c2",
+                            value="Te informa o horario de hoje para a turma que pedir\n"
+                                  "Ex: !hoje 3c2\n"
+                                  "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
                             inline=False)
         embed_var.add_field(name="!horario",
-                            value="Te informa o horario completo para a turma que pedir\n Ex: !horario 3c2",
+                            value="Te informa o horario completo para a turma que pedir\n"
+                                  "Ex: !horario 3c2\n"
+                                  "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
                             inline=False)
         await message.channel.send(embed=embed_var)
 
