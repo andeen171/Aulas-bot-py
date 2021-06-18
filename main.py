@@ -58,7 +58,7 @@ def time_until(hour, interval=False, free=False, week_day=None):
         else:
             time_end = datetime.combine(dia, first)
     else:
-        time_end = datetime.combine(dia, hours[int(hour) - 1])
+        time_end = datetime.combine(dia, hours[int(hour)])
     time_now = datetime.combine(dia, now)
     if '-' in str(time_end - time_now):
         return round(timedelta.total_seconds(time_now - time_end) / 60, 1)
