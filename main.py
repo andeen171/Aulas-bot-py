@@ -15,41 +15,22 @@ fifth = time(0, 0, 0)
 end = time(0, 0, 0)
 hours = []
 now = time(0, 0, 0)
+timeZone = pytz.timezone('America/Sao_Paulo')
 days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabado']
 roleId = {'3c2': '853795487513706537', '3a2': '853795394676850728'}
 
 
-def ConvertToUTC(hour):
-    local = pytz.timezone("America/Sao_Paulo")
-    local_dt = local.localize(hour, is_dst=None)
-    return local_dt.astimezone(pytz.utc)
-
-
 def CreateGlobals(data, command, weekDay):
-    global first, second, third, pause, forth, fifth, end, hours, now
+    global first, second, third, pause, forth, fifth, end, hours, now, timeZone
     dataFiltered = data[command][weekDay]
-    now = ConvertToUTC(datetime.now()).time()
-
-    temp = datetime.strptime(dataFiltered['1']['time'][0], '%H:%M')
-    first = ConvertToUTC(temp).time()
-
-    temp = datetime.strptime(dataFiltered['1']['time'][1], '%H:%M')
-    second = ConvertToUTC(temp).time()
-
-    temp = datetime.strptime(dataFiltered['2']['time'][1], '%H:%M')
-    third = ConvertToUTC(temp).time()
-
-    temp = datetime.strptime(dataFiltered['3']['time'][1], '%H:%M')
-    pause = ConvertToUTC(temp).time()
-
-    temp = datetime.strptime(dataFiltered['4']['time'][0], '%H:%M')
-    forth = ConvertToUTC(temp).time()
-
-    temp = datetime.strptime(dataFiltered['4']['time'][1], '%H:%M')
-    fifth = ConvertToUTC(temp).time()
-
-    temp = datetime.strptime(dataFiltered['5']['time'][1], '%H:%M')
-    end = ConvertToUTC(temp).time()
+    now = datetime.now(timeZone).time()
+    first = datetime.strptime(dataFiltered['1']['time'][0], '%H:%M').time()
+    second = datetime.strptime(dataFiltered['1']['time'][1], '%H:%M').time()
+    third = datetime.strptime(dataFiltered['2']['time'][1], '%H:%M').time()
+    pause = datetime.strptime(dataFiltered['3']['time'][1], '%H:%M').time()
+    forth = datetime.strptime(dataFiltered['4']['time'][0], '%H:%M').time()
+    fifth = datetime.strptime(dataFiltered['4']['time'][1], '%H:%M').time()
+    end = datetime.strptime(dataFiltered['5']['time'][1], '%H:%M').time()
     hours = [first, second, third, forth, fifth]
 
 
@@ -85,13 +66,11 @@ def TimeUntil(hour, interval=False, free=False, weekDay=None):
 def ExceptionHandling(message, data):
     if len(message.content.split()) < 2:
         return 'Faltou informar o código da turma!'
-    command = message.content.split()[1]
+    command = message.content.split()[1].upper()
     try:
         dataFiltred = data[command]
     except KeyError:
         return 'Codigo de turma inválido'
-    if dataFiltred == "free":
-        return "Nenhuma aula hoje"
     return
 
 
@@ -144,7 +123,7 @@ async def on_message(message):
     if message.author == client.user:
         return
     data = GetRawFile()
-    weekDay = str(ConvertToUTC(datetime.now()).weekday() + 1)
+    weekDay = str(datetime.now(timeZone).weekday() + 1)
 
     if message.content.startswith('!horario'):
         exception = ExceptionHandling(message, data)
