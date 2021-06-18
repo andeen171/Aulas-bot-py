@@ -36,10 +36,10 @@ def set_globals(data, command, week_day):
 def next_subject(week_day, data_filtred, interval=False):
     if interval:
         return data_filtred[week_day]["4"]['subject']
-    if week_day == '0' or week_day == '6' or (week_day == 5 and now > end):
+    if week_day == '0' or week_day == '6' or (week_day == '5' and now > end):
         return data_filtred['1']['1']['subject']
     if now > end:
-        return data_filtred[str(week_day + 1)]['1']['subject']
+        return data_filtred[str(int(week_day) + 1)]['1']['subject']
     return data_filtred[week_day]['1']['subject']
 
 
