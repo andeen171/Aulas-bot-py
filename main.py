@@ -152,8 +152,8 @@ def class_now(week_day, data_filtred, role):
 @client.event
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.streaming,
-                                                           name="O sexo nervoso que eu to fazendo com a sua mãe"))
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.playing,
+                                                           name="!help"))
 
 
 @client.event
