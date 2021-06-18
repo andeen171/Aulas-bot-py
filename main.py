@@ -15,7 +15,7 @@ forth = time(0, 0, 0)
 fifth = time(0, 0, 0)
 end = time(0, 0, 0)
 now = time(0, 0, 0)
-hours = []
+hours = {}
 timeZone = pytz.timezone('America/Sao_Paulo')
 days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabado']
 
@@ -31,7 +31,7 @@ def set_globals(data, command, week_day):
     forth = datetime.strptime(data_filtered['4']['time'][0], '%H:%M').time()
     fifth = datetime.strptime(data_filtered['4']['time'][1], '%H:%M').time()
     end = datetime.strptime(data_filtered['5']['time'][1], '%H:%M').time()
-    hours = [first, second, third, forth, fifth]
+    hours = {'1': second, '2': third, '3': pause, '4': fifth, '5': end}
 
 
 def next_subject(week_day, data_filtred, interval=False):
@@ -58,7 +58,7 @@ def time_until(hour, interval=False, free=False, week_day=None):
         else:
             time_end = datetime.combine(dia, first)
     else:
-        time_end = datetime.combine(dia, hours[int(hour)])
+        time_end = datetime.combine(dia, hours[hour])
     time_now = datetime.combine(dia, now)
     if '-' in str(time_end - time_now):
         return round(timedelta.total_seconds(time_now - time_end) / 60, 1)
