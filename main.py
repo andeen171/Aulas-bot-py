@@ -20,61 +20,60 @@ days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feir
 roleId = {'3c2': '853795487513706537', '3a2': '853795394676850728'}
 
 
-def CreateGlobals(data, command, weekDay):
+def set_globals(data, command, week_day):
     global first, second, third, pause, forth, fifth, end, hours, now, timeZone
-    dataFiltered = data[command][weekDay]
+    data_filtered = data[command][week_day]
     now = datetime.now(timeZone).time()
-    first = datetime.strptime(dataFiltered['1']['time'][0], '%H:%M').time()
-    second = datetime.strptime(dataFiltered['1']['time'][1], '%H:%M').time()
-    third = datetime.strptime(dataFiltered['2']['time'][1], '%H:%M').time()
-    pause = datetime.strptime(dataFiltered['3']['time'][1], '%H:%M').time()
-    forth = datetime.strptime(dataFiltered['4']['time'][0], '%H:%M').time()
-    fifth = datetime.strptime(dataFiltered['4']['time'][1], '%H:%M').time()
-    end = datetime.strptime(dataFiltered['5']['time'][1], '%H:%M').time()
+    first = datetime.strptime(data_filtered['1']['time'][0], '%H:%M').time()
+    second = datetime.strptime(data_filtered['1']['time'][1], '%H:%M').time()
+    third = datetime.strptime(data_filtered['2']['time'][1], '%H:%M').time()
+    pause = datetime.strptime(data_filtered['3']['time'][1], '%H:%M').time()
+    forth = datetime.strptime(data_filtered['4']['time'][0], '%H:%M').time()
+    fifth = datetime.strptime(data_filtered['4']['time'][1], '%H:%M').time()
+    end = datetime.strptime(data_filtered['5']['time'][1], '%H:%M').time()
     hours = [first, second, third, forth, fifth]
 
 
-def NextSubject(weekDay, data, command, interval=False):
-    dataFiltred = data[command]
+def next_subject(week_day, data, command, interval=False):
+    data_filtred = data[command]
     if interval:
-        return dataFiltred[weekDay]["4"]['subject']
-    if int(weekDay) < 1 or int(weekDay) >= 5:
-        return dataFiltred['1']['1']['subject']
-    nextDay = int(weekDay) + 1
-    return dataFiltred[str(nextDay)]['1']['subject']
+        return data_filtred[week_day]["4"]['subject']
+    if int(week_day) < 1 or int(week_day) >= 5:
+        return data_filtred['1']['1']['subject']
+    next_day = int(week_day) + 1
+    return data_filtred[str(next_day)]['1']['subject']
 
 
-def TimeUntil(hour, interval=False, free=False, weekDay=None):
+def time_until(hour, interval=False, free=False, week_day=None):
     dia = date(1, 1, 1)
     if interval:
-        timeEnd = datetime.combine(dia, forth)
+        time_end = datetime.combine(dia, forth)
     elif free:
-        if weekDay == '5':
-            timeEnd = datetime.combine(date(1, 1, 4), first)
-        elif weekDay == '6':
-            timeEnd = datetime.combine(date(1, 1, 3), first)
+        if week_day == '5':
+            time_end = datetime.combine(date(1, 1, 4), first)
+        elif week_day == '6':
+            time_end = datetime.combine(date(1, 1, 3), first)
         else:
-            timeEnd = datetime.combine(date(1, 1, 2), first)
+            time_end = datetime.combine(date(1, 1, 2), first)
     else:
-        timeEnd = datetime.combine(dia, hours[int(hour) - 1])
-    timeNow = datetime.combine(dia, now)
-    if '-' in str(timeEnd - timeNow):
-        return round(timedelta.total_seconds(timeNow - timeEnd) / 60, 1)
-    return round(timedelta.total_seconds(timeEnd - timeNow) / 60, 1)
+        time_end = datetime.combine(dia, hours[int(hour) - 1])
+    time_now = datetime.combine(dia, now)
+    if '-' in str(time_end - time_now):
+        return round(timedelta.total_seconds(time_now - time_end) / 60, 1)
+    return round(timedelta.total_seconds(time_end - time_now) / 60, 1)
 
 
-def ExceptionHandling(message, data):
+def exception_handling(message, data):
     if len(message.content.split()) < 2:
         return 'Faltou informar o código da turma!'
     command = message.content.split()[1].upper()
     try:
-        dataFiltred = data[command]
+        data[command]
     except KeyError:
         return 'Codigo de turma inválido'
-    return
 
 
-def CreateEmbed(data, x):
+def create_embed(data, x):
     strings = []
     for key, value in data[str(x)].items():
         strings.append(f'{key}° Horário: {value["subject"]} | {value["time"][0]} - {value["time"][1]}')
@@ -87,13 +86,12 @@ def CreateEmbed(data, x):
                          color=0xfc03f0)
 
 
-def GetRawFile():
+def raw_file():
     with open('data.json', 'r') as jason:
         return json.load(jason)
 
 
-def GetActualTime():
-    # timeNow = time(20, 0, 0)
+def actual_time():
     if first < now < second:
         hour = '1'
     elif second < now < third:
@@ -111,6 +109,36 @@ def GetActualTime():
     return hour
 
 
+def class_now(week_day, data, command):
+    hour = actual_time()
+    if hour == 'free':
+        time_left = time_until(hour, free=True, week_day=week_day)
+        if time_left > 60:
+            time_left = str(round(time_left / 60, 1)) + ' horas'
+        else:
+            time_left = str(time_left) + ' minutos'
+        subject = next_subject(week_day, data, command)
+        return discord.Embed(title='Nenhuma aula hoje!',
+                             description=f'Falta {time_left} para a aula {subject} de amanhã!',
+                             color=0xfc03f0)
+
+    if hour == 'interval':
+        time_left = time_until(hour, interval=True)
+        subject = next_subject(week_day, data, command, interval=True)
+        return discord.Embed(title='Ta no intervalo',
+                             description=f'Falta {time_left} minutos para a aula de {subject} ainda!',
+                             color=0xfc03f0)
+
+    subject = data[command][week_day][hour]['subject']
+    start_end = data[command][week_day][hour]['time']
+    time_left = time_until(hour)
+    return discord.Embed(title=f'Ta tendo aula de {subject} agora, corre lá!',
+                         description=f'Começou {start_end[0]} e vai terminar {start_end[1]}\n '
+                                     f'falta {time_left} minutos para acabar!\n'
+                                     f'<@&{roleId[command]}>',
+                         color=0xfc03f0)
+
+
 @client.event
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
@@ -120,90 +148,46 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == client.user or '!' not in message.content:
         return
-    data = GetRawFile()
-    weekDay = str(datetime.now(timeZone).weekday() + 1)
+    data = raw_file()
+    week_day = str(datetime.now(timeZone).weekday() + 1)
+    exception = exception_handling(message, data)
+    if exception:
+        await message.channel.send(exception)
+        return
+    command = message.content.split()[1].upper()
+    set_globals(data, command, week_day)
+    data_filtred = data[command]
 
     if message.content.startswith('!horario'):
-        exception = ExceptionHandling(message, data)
-        if exception:
-            await message.channel.send(exception)
-            return
-        command = message.content.split()[1].upper()
-        CreateGlobals(data, command, weekDay)
-        dataFiltred = data[command]
         for x in range(1, 6):
-            embedVar = CreateEmbed(dataFiltred, x)
-            await message.channel.send(embed=embedVar)
+            embed_var = create_embed(data_filtred, x)
+            await message.channel.send(embed=embed_var)
 
     if message.content.startswith('!hoje'):
-        exception = ExceptionHandling(message, data)
-        if exception:
-            await message.channel.send(exception)
-            return
-        command = message.content.split()[1].upper()
-        CreateGlobals(data, command, weekDay)
-        dataFiltred = data[command]
-        embedVar = CreateEmbed(dataFiltred, weekDay)
-        await message.channel.send(embed=embedVar)
+        embed_var = create_embed(data_filtred, week_day)
+        await message.channel.send(embed=embed_var)
 
     if message.content.startswith('!agora'):
-        exception = ExceptionHandling(message, data)
-        if exception:
-            await message.channel.send(exception)
-            return
-        command = message.content.split()[1].upper()
-        CreateGlobals(data, command, weekDay)
-        hour = GetActualTime()
-        if hour == 'free':
-            timeLeft = TimeUntil(hour, free=True, weekDay=weekDay)
-            if timeLeft > 60:
-                timeLeft = str(round(timeLeft / 60, 1)) + ' horas'
-            else:
-                timeLeft = str(timeLeft) + ' minutos'
-            nextSubject = NextSubject(weekDay, data, command)
-            if nextSubject == "Livre":
-                nextSubject = "vaga antes de RAC"
-            else:
-                nextSubject = f'de {nextSubject}'
-            embedVar = discord.Embed(title='Nenhuma aula hoje!',
-                                     description=f'Falta {timeLeft} para a aula {nextSubject} amanhã!',
-                                     color=0xfc03f0)
-            await message.channel.send(embed=embedVar)
-            return
-        if hour == 'interval':
-            timeLeft = TimeUntil(hour, interval=True)
-            nextSubject = NextSubject(weekDay, data, command, interval=True)
-            embedVar = discord.Embed(title='Ta no intervalo',
-                                     description=f'Falta {timeLeft} minutos para a aula de {nextSubject} ainda!',
-                                     color=0xfc03f0)
-            await message.channel.send(embed=embedVar)
-            return
-        subject = data[command][weekDay][hour]['subject']
-        startEnd = data[command][weekDay][hour]['time']
-        timeLeft = TimeUntil(hour)
-        embedVar = discord.Embed(title=f'Ta tendo aula de {subject} agora, corre lá!',
-                                 description=f'Começou {startEnd[0]} e vai terminar {startEnd[1]}\n '
-                                             f'falta {timeLeft} minutos para acabar!\n'
-                                             f'<@&{roleId[command]}>',
-                                 color=0xfc03f0)
-        await message.channel.send(embed=embedVar)
+        embed_var = class_now(week_day, data, command)
+
+        await message.channel.send(embed=embed_var)
 
     if message.content.startswith('!help'):
-        embedVar = discord.Embed(title="Class Assistant.py Bot",
-                                 description="Lista de todos os comandos do BOT e como utilizá-los",
-                                 color=0xfc03f0)
-        embedVar.add_field(name="!agora",
-                           value="Te informa a aula que ta rolando agora pra turma que pedir\n Ex: !agora 3c2",
-                           inline=False)
-        embedVar.add_field(name="!hoje",
-                           value="Te informa o horario de hoje para a turma que pedir\n Ex: !hoje 3c2",
-                           inline=False)
-        embedVar.add_field(name="!horario",
-                           value="Te informa o horario completo para a turma que pedir\n Ex: !horario 3c2",
-                           inline=False)
-        await message.channel.send(embed=embedVar)
+        embed_var = discord.Embed(title="Class Assistant.py Bot",
+                                  description="Lista de todos os comandos do BOT e como utilizá-los",
+                                  color=0xfc03f0)
+        embed_var.add_field(name="!agora",
+                            value="Te informa a aula que ta rolando agora pra turma que pedir\n Ex: !agora 3c2",
+                            inline=False)
+        embed_var.add_field(name="!hoje",
+                            value="Te informa o horario de hoje para a turma que pedir\n Ex: !hoje 3c2",
+                            inline=False)
+        embed_var.add_field(name="!horario",
+                            value="Te informa o horario completo para a turma que pedir\n Ex: !horario 3c2",
+                            inline=False)
+        await message.channel.send(embed=embed_var)
 
 
 client.run(discord_token)
