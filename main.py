@@ -1,6 +1,7 @@
 import discord
 import pytz
 import json
+from discord.utils import get
 from datetime import datetime, time, date, timedelta
 
 client = discord.Client()
@@ -13,11 +14,10 @@ pause = time(0, 0, 0)
 forth = time(0, 0, 0)
 fifth = time(0, 0, 0)
 end = time(0, 0, 0)
-hours = []
 now = time(0, 0, 0)
+hours = []
 timeZone = pytz.timezone('America/Sao_Paulo')
 days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabado']
-roleId = {'3c2': '853795487513706537', '3a2': '853795394676850728'}
 
 
 def set_globals(data, command, week_day):
@@ -34,14 +34,14 @@ def set_globals(data, command, week_day):
     hours = [first, second, third, forth, fifth]
 
 
-def next_subject(week_day, data, command, interval=False):
-    data_filtred = data[command]
+def next_subject(week_day, data_filtred, interval=False):
     if interval:
         return data_filtred[week_day]["4"]['subject']
-    if int(week_day) < 1 or int(week_day) >= 5:
+    if week_day == '0' or week_day == '6' or (week_day == 5 and now > end):
         return data_filtred['1']['1']['subject']
-    next_day = int(week_day) + 1
-    return data_filtred[str(next_day)]['1']['subject']
+    if now > end:
+        return data_filtred[str(week_day + 1)]['1']['subject']
+    return data_filtred[week_day]['1']['subject']
 
 
 def time_until(hour, interval=False, free=False, week_day=None):
@@ -49,12 +49,14 @@ def time_until(hour, interval=False, free=False, week_day=None):
     if interval:
         time_end = datetime.combine(dia, forth)
     elif free:
-        if week_day == '5':
+        if week_day == '5' and now > end:
             time_end = datetime.combine(date(1, 1, 4), first)
         elif week_day == '6':
             time_end = datetime.combine(date(1, 1, 3), first)
-        else:
+        elif now > end:
             time_end = datetime.combine(date(1, 1, 2), first)
+        else:
+            time_end = datetime.combine(dia, first)
     else:
         time_end = datetime.combine(dia, hours[int(hour) - 1])
     time_now = datetime.combine(dia, now)
@@ -109,33 +111,41 @@ def actual_time():
     return hour
 
 
-def class_now(week_day, data, command):
+def class_now(week_day, data_filtred, role):
     hour = actual_time()
+    try:
+        role.mention
+    except AttributeError:
+        mention = ''
+    else:
+        mention = role.mention
     if hour == 'free':
         time_left = time_until(hour, free=True, week_day=week_day)
         if time_left > 60:
             time_left = str(round(time_left / 60, 1)) + ' horas'
         else:
             time_left = str(time_left) + ' minutos'
-        subject = next_subject(week_day, data, command)
+        subject = next_subject(week_day, data_filtred)
         return discord.Embed(title='Nenhuma aula hoje!',
-                             description=f'Falta {time_left} para a aula {subject} de amanhã!',
+                             description=f'Falta {time_left} para a aula de {subject}!\n'
+                                         f'{mention}',
                              color=0xfc03f0)
 
     if hour == 'interval':
         time_left = time_until(hour, interval=True)
-        subject = next_subject(week_day, data, command, interval=True)
+        subject = next_subject(week_day, data_filtred, interval=True)
         return discord.Embed(title='Ta no intervalo',
-                             description=f'Falta {time_left} minutos para a aula de {subject} ainda!',
+                             description=f'Falta {time_left} minutos para a aula de {subject}!\n'
+                                         f'{mention}',
                              color=0xfc03f0)
 
-    subject = data[command][week_day][hour]['subject']
-    start_end = data[command][week_day][hour]['time']
+    subject = data_filtred[week_day][hour]['subject']
+    start_end = data_filtred[week_day][hour]['time']
     time_left = time_until(hour)
     return discord.Embed(title=f'Ta tendo aula de {subject} agora, corre lá!',
                          description=f'Começou {start_end[0]} e vai terminar {start_end[1]}\n '
                                      f'falta {time_left} minutos para acabar!\n'
-                                     f'<@&{roleId[command]}>',
+                                     f'{mention}',
                          color=0xfc03f0)
 
 
@@ -170,8 +180,8 @@ async def on_message(message):
         await message.channel.send(embed=embed_var)
 
     if message.content.startswith('!agora'):
-        embed_var = class_now(week_day, data, command)
-
+        role = get(message.guild.roles, name=command)
+        embed_var = class_now(week_day, data_filtred, role)
         await message.channel.send(embed=embed_var)
 
     if message.content.startswith('!help'):
