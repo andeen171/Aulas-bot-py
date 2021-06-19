@@ -22,6 +22,8 @@ days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feir
 def set_globals(data, command, week_day):
     global first, second, third, pause, forth, fifth, end, hours, now
     data_filtered = data[command][week_day]
+    if data_filtered == 'free':
+        data_filtered = data[command]['1']
     now = datetime.now(pytz.timezone('America/Sao_Paulo')).time()
     first = datetime.strptime(data_filtered['1']['time'][0], '%H:%M').time()
     second = datetime.strptime(data_filtered['1']['time'][1], '%H:%M').time()
@@ -159,30 +161,6 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user or '!' not in message.content:
         return
-    data = raw_file()
-    week_day = str(datetime.now(pytz.timezone('America/Sao_Paulo')).weekday() + 1)
-    exception = exception_handling(message, data)
-    if exception:
-        await message.channel.send(exception)
-        return
-    command = message.content.split()[1].upper()
-    set_globals(data, command, week_day)
-    data_filtred = data[command]
-
-    if message.content.startswith('!horario'):
-        for x in range(1, 6):
-            embed_var = create_embed(data_filtred, x)
-            await message.channel.send(embed=embed_var)
-
-    if message.content.startswith('!hoje'):
-        embed_var = create_embed(data_filtred, week_day)
-        await message.channel.send(embed=embed_var)
-
-    if message.content.startswith('!agora'):
-        role = get(message.guild.roles, name=command)
-        embed_var = class_now(week_day, data_filtred, role)
-        await message.channel.send(embed=embed_var)
-
     if message.content.startswith('!help'):
         embed_var = discord.Embed(title="Class Assistant.py Bot",
                                   description="Lista de todos os comandos do BOT e como utilizá-los",
@@ -202,6 +180,37 @@ async def on_message(message):
                                   "Ex: !horario 3c2\n"
                                   "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
                             inline=False)
+        await message.channel.send(embed=embed_var)
+        return
+
+    data = raw_file()
+    week_day = str(datetime.now(pytz.timezone('America/Sao_Paulo')).weekday() + 1)
+    exception = exception_handling(message, data)
+    if exception:
+        await message.channel.send(exception)
+        return
+    command = message.content.split()[1].upper()
+    data_filtred = data[command]
+
+    if message.content.startswith('!horario'):
+        for x in range(1, 6):
+            embed_var = create_embed(data_filtred, x)
+            await message.channel.send(embed=embed_var)
+        return
+
+    set_globals(data, command, week_day)
+
+    if message.content.startswith('!hoje'):
+        if data_filtred[week_day] == 'free':
+            await message.channel.send('Nenhuma aula hoje!')
+            return
+        embed_var = create_embed(data_filtred, week_day)
+        await message.channel.send(embed=embed_var)
+        return
+
+    if message.content.startswith('!agora'):
+        role = get(message.guild.roles, name=command)
+        embed_var = class_now(week_day, data_filtred, role)
         await message.channel.send(embed=embed_var)
 
 
