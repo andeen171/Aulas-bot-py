@@ -4,6 +4,7 @@ import json
 from discord.utils import get
 from datetime import datetime, time, date, timedelta
 
+# ==================== Globals ==========================
 client = discord.Client()
 with open('config.json', 'r') as token:
     discord_token = json.load(token)['token']
@@ -16,9 +17,10 @@ fifth = time(0, 0, 0)
 end = time(0, 0, 0)
 now = time(0, 0, 0)
 hours = {}
-days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sabado']
+days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado']
 
 
+# ============================ functions ============================
 def set_globals(data, command, week_day):
     global first, second, third, pause, forth, fifth, end, hours, now
     data_filtered = data[command][week_day]
@@ -96,20 +98,40 @@ def raw_file():
 
 def actual_time():
     if first < now < second:
-        hour = '1'
-    elif second < now < third:
-        hour = '2'
-    elif third < now < pause:
-        hour = '3'
-    elif pause < now < forth:
-        hour = 'interval'
-    elif forth < now < fifth:
-        hour = '4'
-    elif fifth < now < end:
-        hour = '5'
-    else:
-        hour = 'free'
-    return hour
+        return '1'
+    if second < now < third:
+        return '2'
+    if third < now < pause:
+        return '3'
+    if pause < now < forth:
+        return 'interval'
+    if forth < now < fifth:
+        return '4'
+    if fifth < now < end:
+        return '5'
+    return 'free'
+
+
+def help_embed():
+    embed_var = discord.Embed(title="Class Assistant.py Bot",
+                              description="Lista de todos os comandos do BOT e como utilizá-los",
+                              color=0xffd343)
+    embed_var.add_field(name="!agora",
+                        value="Te informa a aula que ta rolando agora pra turma que pedir\n"
+                              "Ex: !agora 3c2\n"
+                              "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
+                        inline=False)
+    embed_var.add_field(name="!hoje",
+                        value="Te informa o horario de hoje para a turma que pedir\n"
+                              "Ex: !hoje 3c2\n"
+                              "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
+                        inline=False)
+    embed_var.add_field(name="!horario",
+                        value="Te informa o horario completo para a turma que pedir\n"
+                              "Ex: !horario 3c2\n"
+                              "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
+                        inline=False)
+    return embed_var
 
 
 def class_now(week_day, data_filtred, role):
@@ -150,6 +172,7 @@ def class_now(week_day, data_filtred, role):
                          color=0xffd343)
 
 
+# =============================== Client run ==================================================
 @client.event
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
@@ -162,24 +185,7 @@ async def on_message(message):
     if message.author == client.user or '!' not in message.content:
         return
     if message.content.startswith('!help'):
-        embed_var = discord.Embed(title="Class Assistant.py Bot",
-                                  description="Lista de todos os comandos do BOT e como utilizá-los",
-                                  color=0xffd343)
-        embed_var.add_field(name="!agora",
-                            value="Te informa a aula que ta rolando agora pra turma que pedir\n"
-                                  "Ex: !agora 3c2\n"
-                                  "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
-                            inline=False)
-        embed_var.add_field(name="!hoje",
-                            value="Te informa o horario de hoje para a turma que pedir\n"
-                                  "Ex: !hoje 3c2\n"
-                                  "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
-                            inline=False)
-        embed_var.add_field(name="!horario",
-                            value="Te informa o horario completo para a turma que pedir\n"
-                                  "Ex: !horario 3c2\n"
-                                  "Obs: Crie um cargo com o mesmo nome da turma para que eu mencione-o",
-                            inline=False)
+        embed_var = help_embed()
         await message.channel.send(embed=embed_var)
         return
 
