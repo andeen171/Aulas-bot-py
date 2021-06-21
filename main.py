@@ -40,7 +40,7 @@ def set_globals(data, command, week_day):
 def next_subject(week_day, data_filtred, interval=False):
     if interval:
         return data_filtred[week_day]["4"]['subject']
-    if week_day == '0' or week_day == '6' or (week_day == '5' and now > end):
+    if week_day == '5' or week_day == '6' or (week_day == '4' and now > end):
         return data_filtred['1']['1']['subject']
     if now > end:
         return data_filtred[str(int(week_day) + 1)]['1']['subject']
@@ -52,7 +52,7 @@ def time_until(hour, interval=False, free=False, week_day=None):
     if interval:
         time_end = datetime.combine(dia, forth)
     elif free:
-        if week_day == '5' and now > end:
+        if week_day == '4' and now > end:
             time_end = datetime.combine(date(1, 1, 4), first)
         elif week_day == '6':
             time_end = datetime.combine(date(1, 1, 3), first)
@@ -190,7 +190,7 @@ async def on_message(message):
         return
 
     data = raw_file()
-    week_day = str(datetime.now(pytz.timezone('America/Sao_Paulo')).weekday() + 1)
+    week_day = str(datetime.now(pytz.timezone('America/Sao_Paulo')).weekday())
     exception = exception_handling(message, data)
     if exception:
         await message.channel.send(exception)
