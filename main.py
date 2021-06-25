@@ -17,7 +17,7 @@ fifth = time(0, 0, 0)
 end = time(0, 0, 0)
 now = time(0, 0, 0)
 hours = {}
-days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado']
+days = ['Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado', 'Domingo']
 
 
 # ============================ functions ============================
