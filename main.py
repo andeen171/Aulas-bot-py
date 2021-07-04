@@ -41,7 +41,8 @@ def next_subject(week_day, data_filtred, interval=False):
     if interval:
         return data_filtred[week_day]["4"]['subject']
     if week_day == '5' or week_day == '6' or (week_day == '4' and now > end):
-        return data_filtred['1']['1']['subject']
+        print('foi')
+        return data_filtred['0']['1']['subject']
     if now > end:
         return data_filtred[str(int(week_day) + 1)]['1']['subject']
     return data_filtred[week_day]['1']['subject']
@@ -53,10 +54,8 @@ def time_until(hour, interval=False, free=False, week_day=None):
         time_end = datetime.combine(dia, forth)
     elif free:
         if week_day == '4' and now > end:
-            time_end = datetime.combine(date(1, 1, 4), first)
-        elif week_day == '6':
             time_end = datetime.combine(date(1, 1, 3), first)
-        elif now > end:
+        elif week_day == '6':
             time_end = datetime.combine(date(1, 1, 2), first)
         else:
             time_end = datetime.combine(dia, first)
@@ -182,7 +181,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author == client.user or '!' not in message.content:
+    if message.author == client.user or not message.content.startswith('!'):
         return
     if message.content.startswith('!help'):
         embed_var = help_embed()
