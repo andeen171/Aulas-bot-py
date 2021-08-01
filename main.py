@@ -117,7 +117,9 @@ class Session:
         subject = self.data_filtered[hour]
         time_left = self.time_until()
         return discord.Embed(title=f'Ta tendo aula de {subject} agora, corre lá!',
-                             description=f'falta {time_left} minutos para acabar!\n'
+                             description=f'Começou às {self.inicial[int(hour)]}'
+                                         f' e terminará às {self.final[int(hour)]}'
+                                         f'falta {time_left} minutos para acabar!\n'
                                          f'{mention}',
                              color=0xffd343)
 
